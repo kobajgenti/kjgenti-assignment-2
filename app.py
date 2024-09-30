@@ -6,9 +6,7 @@ import numpy as np
 from k_means import KMeans
 
 app = Flask(__name__)
-
-# Configure CORS to allow requests from http://127.0.0.1:5000
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5000"}})
+CORS(app)  # Enable CORS for all routes
 
 # Global variables to store state (for simplicity; consider more robust state management)
 kmeans_instance = None
@@ -79,7 +77,16 @@ def step():
         return jsonify({'error': 'KMeans not initialized.'}), 400
 
     X = np.array(X_data)
+    data = request.json
+    manual_centroids = data.get('manual_centroids')
+    current_centroids = data.get('current_centroids')
+
     try:
+        if manual_centroids and kmeans_instance.iterations == 0:
+            kmeans_instance.centroids = np.array(manual_centroids)
+        elif current_centroids:
+            kmeans_instance.centroids = np.array(current_centroids)
+
         state = kmeans_instance.fit_step(X)
     except ValueError as ve:
         return jsonify({'error': str(ve)}), 400
@@ -92,6 +99,7 @@ def step():
     }
     return jsonify(response)
 
+
 @app.route('/run', methods=['POST'])
 def run():
     global kmeans_instance, X_data
@@ -99,7 +107,16 @@ def run():
         return jsonify({'error': 'KMeans not initialized.'}), 400
 
     X = np.array(X_data)
+    data = request.json
+    manual_centroids = data.get('manual_centroids')
+    current_centroids = data.get('current_centroids')
+
     try:
+        if manual_centroids and kmeans_instance.iterations == 0:
+            kmeans_instance.centroids = np.array(manual_centroids)
+        elif current_centroids:
+            kmeans_instance.centroids = np.array(current_centroids)
+
         kmeans_instance.fit(X)
         state = kmeans_instance.history[-1]
     except ValueError as ve:
@@ -121,5 +138,4 @@ def reset():
     return jsonify({'message': 'KMeans instance has been reset.'}), 200
 
 if __name__ == '__main__':
-    # Explicitly set host to '127.0.0.1' to ensure the server is accessible at http://127.0.0.1:5000
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(port=5000, debug=True)
