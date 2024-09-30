@@ -1,0 +1,40 @@
+/* static/css/styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.controls > * {
+    margin: 5px;
+}
+
+#manual-info {
+    margin-bottom: 10px;
+    color: green;
+}
+
+#plot {
+    width: 800px;
+    height: 600px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+
+.status {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
